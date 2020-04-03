@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="author" content="DSQUARE"/>
+	<meta name="description" content="GPA/CGPA SOFTWARE that will calculate your GPA in real time."/>
+	<meta name="keywords" content="GPA/CGPA SOFTWARE, Calculate GPA, GPA, Calculator, Calculate your GPA, GPA for me"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta property="og:description" content="GPA/CGPA SOFTWARE that will calculate your GPA in real time."/>
+	<meta property="og:title" content="GPA/CGPA SOFTWARE"/>
+
+	<title>GPA/CGPA SOFTWARE</title>
+
+	<link href='https://fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700' rel='stylesheet' type='text/css'>
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<link href="css/style.css" rel="stylesheet">
+
+	<script src="js/angular.min.js"></script>
+	<script src="js/script.js"></script>
+
+	  <!-- Favicon -->
+	  <link rel="icon" href="../img/7.jpeg">
+
+	  <!-- Core Stylesheet -->
+	  <link href="../style.css" rel="stylesheet">
+  
+	  <!-- Responsive CSS -->
+	  <link href="../css/responsive/responsive.css" rel="stylesheet">
+
+	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+	<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+</head>
+<body ng-app="gpa" ng-controller="calcCtrl">
+
+	  <!-- Preloader Start -->
+	  <div id="preloader">
+			<div class="loader">
+				<span class="inner1"></span>
+				<span class="inner2"></span>
+				<span class="inner3"></span>
+			</div>
+		</div>
+		<header class="header_area" id="header" style="background-color: rgba('0, 0, 0, 0.7');">
+			<div class="container-fluid h-100">
+				<div class="row h-100">
+					<div class="col-12 h-100">
+						<nav class="h-100 navbar navbar-expand-lg align-items-center">
+							<a class="navbar-brand" href="../index.html">CEE-Plapoly</a>
+							<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#fancyNav" aria-controls="fancyNav" aria-expanded="false" aria-label="Toggle navigation"><span class="ti-menu"></span></button>
+							<div class="collapse navbar-collapse" id="fancyNav">
+								<ul class="navbar-nav ml-auto">
+									<li class="nav-item active">
+										<a class="nav-link" href="../index.html">Home <span class="sr-only">(current)</span></a>
+									</li>
+									
+									<li class="nav-item">
+										<a class="nav-link" href="../forum/">Forum</a>
+									</li>
+									<li class="nav-item">
+										<a class="nav-link" href="../notes/">Notes</a>
+									</li>
+									<li class="nav-item">
+										<a class="nav-link" href="../contact.html">Contact</a>
+									</li>
+								</ul>
+							   
+							</div>
+						</nav>
+					</div>
+				</div>
+			</div>
+		</header>
+		<!-- ***** Header Area End ***** -->
+
+
+		 <!-- ***** Hero Area Start ***** -->
+		 <div class="fancy-hero-area bg-img bg-overlay animated-img" style="background-image: url(../img/1.jpeg);">
+			<div class="container h-100">
+				<div class="row h-100 align-items-center">
+					<div class="col-12">
+						<div class="fancy-hero-content text-center">
+							<h2>Plateau State Polytechnic Computer/Electrical Engineering Department</h2>
+							<h2>GPA/CGPA Calculation</h2>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- ***** Hero Area End ***** -->
+
+		<section class="bg-gray container-fluid" style="margin-top: 50px;">
+				<div class="text-center">
+						<div class="row">
+							<div class="col-md-8 col-xs-12 col-md-push-2">
+				
+								<!--Final Calculated GPA-->
+								<table class="table">
+									<tr>
+										<td style="font-weight:bold; font-size:1.75em">SEMESTER GPA: {{(semestergpa | number: 3) || '?'}}</td>
+										<td ng-show="semesters.length > 1" style="font-weight:bold; font-size:1.75em">CUMULATIVE GPA: {{(cumulativegpa | number: 3) || '?'}}</td>
+									</tr>
+								</table>
+				
+								<!--GPA Calculator-->
+								<table class="table table-bordered table-hover">
+									<tr style="font-weight: bold">
+										<td style="width:35%">Name</td>
+										<td style="width:15%">Credits</td>
+										<td style="width:15%">Grade</td>
+										<td style="width:15%">Action</td>
+									</tr>
+									<tr ng-repeat="class in selected_semester.classes" class-repeat-dir>
+										<td class="infotext">
+											<input ng-model="class.name" type="text"></input>
+										</td>
+				
+										<td class="infotext">
+											<input id="credits" type="text" pattern="\d*" maxlength="1" ng-model="class.credit" ng-change="updateGPA()"></input>
+										</td>
+				
+										<td class="infotext">
+												<select ng-model="class.grade" ng-change="updateGPA()" ng-options="class.value as class.text for class in grades"></select>
+										</td>
+				
+										<td class="infotext hs">
+												<select ng-model="class.level" ng-change="updateGPA()" ng-options="class.value as class.text for class in levels"></select>
+										</td>
+				
+										<td>
+											<div class="buttons" ng-show="!rowform.$visible">
+												<button class="btn btn-danger" ng-click="removeClass($index)">Remove</button>
+											</div>
+										</td>
+									</tr>
+				
+								</table>
+								<br>
+								<button class="btn btn-default" ng-click="addClass()">Add a Class</button>
+								<button class="btn btn-primary" ng-click="saveClasses()">Save Classes</button>
+								<button class="btn btn-danger" ng-click="resetAll()">Reset All</button>
+								<br>
+								<div id="saveAlert" class="alert alert-success fade hidden">
+									<strong>Saved!</strong> You can now refresh the page.
+								</div>
+							</div>
+				
+							<!--Semesters-->
+							<div id="semesters" class="col-md-2 col-xs-12 col-md-pull-8">
+								<div class="tableleft">
+									<h4>MY SEMESTERS</h4>
+									<table class="table">
+										<tr ng-repeat="semester in semesters">
+											<td class="{{semester.selected}}"><a ng-click="getSemester($index)">{{semester.name}}</a></td>
+										</tr>
+									</table>
+									<button class="btn btn-default btn-small" ng-click="addSemester()">+</button><button class="btn btn-small btn-danger" ng-show="semesters.length > 1" ng-click="removeSemester()">-</button>
+								</div>
+							</div>
+				
+							<!--Table for GPA Values-->
+							<div class="col-md-1 col-xs-12 col-md-push-0 tableright">
+								<div class="tableright">
+										<table class="table">
+											<strong><b><h5>GRADING </h5></b></strong>
+										</table>
+								</div>
+								
+								<table class="table table-bordered">
+									<thead>
+											<tr>
+												<th>MARKED RANGE</th>
+												<th>LEETER GRADE</th>
+												<th>WEITHTING</th>
+											</tr>
+											</thead>
+											<tbody>
+											<tr>
+												<td>75%-100%</td>
+												<td>A</td>
+												<td>4.00</td>
+											</tr>
+											<tr>
+												<td>70%-74%</td>
+												<td>AB</td>
+												<td>3.50</td>
+											</tr>
+											<tr>
+												<td>65%-69%</td>
+												<td>B</td>
+												<td>3.25</td>
+											</tr>
+											<tr>
+												<td>60%-64%</td>
+												<td>BC</td>
+												<td>3.00</td>
+											</tr>
+											<tr>
+												<td>55%-59%</td>
+												<td>C</td>
+												<td>2.75</td>
+											</tr>
+											<tr>
+												<td>50%-54%</td>
+												<td>CD</td>
+												<td>2.50</td>
+											</tr>
+											<tr>
+												<td>45%-49%</td>
+												<td>D</td>
+												<td>2.25</td>
+											</tr>
+											<tr>
+												<td>40%-44%</td>
+												<td>E</td>
+												<td>2.00</td>
+											</tr>
+											<tr>
+												<td>Below40%</td>
+												<td>F</td>
+												<td>0.00</td>
+											</tr>
+											</tbody>			
+								</table>
+							</div>
+						</div>
+				
+					
+					</div>
+				<div class="container">
+				<div class="col-md-8 col-xs-12 col-md-push-2 text-center">
+				  <h2>CLASSIFICATION OF CERTIFICATE</h2>    
+				  <table class="table table-bordered">
+						<thead class="t"> 
+								<tr>
+									<th>SCORE (CGPA)</th>
+									<th>CLASS OF DIPLOMA</th>
+								</tr>
+								</thead>
+								<tbody>
+								<tr>
+									<td>3.50-4.00</td>
+									<td>Distinction</td>
+								</tr>
+									<tr>
+									<td>3.00-3.49</td>
+									<td>Upper Credit</td>
+									</tr>
+									<tr>
+									<td>2.50-2.99</td>
+									<td>Lower Credit</td>
+									</tr>
+									<tr>
+									<td>2.00-2.49</td>
+									<td>Pass</td>
+									</tr>
+								</tbody>
+					</tbody>
+				  </table>
+				</div>
+				</div>
+	
+</section>
+
+<div id="footer" class="navbar navbar-default navbar-fixed-bottom">
+		<div class="container text-center">
+			<p class="navbar-text col-md-12 col-sm-12 col-xs-12">
+				All right reserve &copy; 2019 developed by DSQUARE
+			</p>
+		</div>
+	</div>
+	<script src="js/jquery.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+
+
+	<!-- jQuery-2.2.4 js -->
+    <script src="../js/jquery/jquery-2.2.4.min.js"></script>
+    <!-- Popper js -->
+    <script src="../js/bootstrap/popper.min.js"></script>
+    <!-- Bootstrap-4 js -->
+    <script src="../js/bootstrap/bootstrap.min.js"></script>
+    <!-- All Plugins js -->
+    <script src="../js/others/plugins.js"></script>
+    <!-- Active JS -->
+    <script src="../js/active.js"></script>
+</body>
+</html>
